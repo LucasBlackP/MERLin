@@ -21,6 +21,14 @@ public protocol AnyModule: class, NSObjectProtocol {
     
     func unmanagedRootViewController() -> UIViewController
     func prepareRootViewController() -> UIViewController
+    
+    func toProducer() -> UntypedEventsProducer?
+}
+
+public extension AnyModule {
+    public func toProducer() -> UntypedEventsProducer? {
+        return self as? UntypedEventsProducer
+    }
 }
 
 public protocol ModuleProtocol: AnyModule {
@@ -74,5 +82,17 @@ public extension AnyModule where Self: NSObject {
             .disposed(by: disposeBag)
         
         return controller
+    }
+}
+
+public extension AnyModule where Self: EventsProducer {
+    public func toProducer() -> UntypedEventsProducer? {
+        return typeErasedSelf
+    }
+}
+
+public extension AnyModule where Self: RoutingEventsProducer {
+    public func toProducer() -> UntypedEventsProducer? {
+        return typeErasedSelf
     }
 }

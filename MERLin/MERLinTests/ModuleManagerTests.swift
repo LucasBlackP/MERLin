@@ -11,9 +11,9 @@ import RxSwift
 @testable import MERLin
 
 class MockEventsListener: EventsListening {
-    var registeredModules = [EventsProducer]()
+    var registeredModules = [AnyEventsProducer<NoEvents>]()
     
-    func registerToEvents(for producer: EventsProducer) -> Bool {
+    func registerToSpecificEvents(for producer: AnyEventsProducer<NoEvents>) -> Bool {
         registeredModules.append(producer)
         return true
     }

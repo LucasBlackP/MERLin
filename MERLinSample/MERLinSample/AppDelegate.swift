@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, EventsProducer {
     
     let disposeBag = DisposeBag()
     
-    var events: Observable<EventProtocol> { return _events.toEventProtocol() }
+    var events: Observable<AppDelegateEvent> { return _events }
     private let _events = PublishSubject<AppDelegateEvent>()
 
     var window: UIWindow?
@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, EventsProducer {
     var moduleManager: BaseModuleManager = BaseModuleManager()
 
     var router: SimpleRouter!
-    lazy var eventsListeners: [EventsListening] = {
+    lazy var eventsListeners: [AnyEventsListening] = {
         return [
             ConsoleLogEventsListener(),
             AppDelegateEventsListener(withRouter: router),
@@ -40,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, EventsProducer {
         moduleManager.addEventsListeners(eventsListeners)
         ThemeManager.defaultTheme = Theme()
         
-        eventsListeners.forEach { $0.registerToEvents(for: self) }
+        eventsListeners.forEach { $0.registerToEvents(for: self.typeErasedSelf) }
         
         return true
     }
